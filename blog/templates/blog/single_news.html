@@ -1,0 +1,236 @@
+{% extends 'base.html' %}
+{% load sidebar %}
+{% load static %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+{% include 'inc/_header.html'%}
+{% endblock %}
+
+{% block content %}
+<section class="single-blog-area">
+    <input type="hidden" id="postId" value="{{ post.id }}">
+            <div class="container">
+                <div class="row">
+                   <div class="col-md-12">
+                        <div class="border-top">
+                            <div class="col-md-8">
+                                <div class="blog-area">
+                                    <div class="blog-area-part">
+                                    <h2>{{ post.title}}</h2>
+                                        <h5> {{ post.created_at }}</h5>
+                                        {% if post.photo %}
+                                    <img src="{{ post.photo.url }}">
+                                    {% endif %}
+                                    <div>
+                                        {% if post.posted_by == null %}
+                                    <span>Posted by: [deleted]</span> <br>
+                                        {% else %}
+                                    <span>Posted by: {{ post.posted_by }}</span> <br>
+                                    {% endif %}
+                                    {% comment %}
+                                    <span>Category: {{ post.category }}</span> <br>
+                                   <!-- {% if post.tag.exists %}
+                                        <span>
+                                            Tags:
+                                            {% for ta in post.tag.all %}
+                                            <a href="{{ ta.get_absolute_url }}">{{ ta.title }}</a>
+                                            {% endfor %}
+                                        </span>
+                                    {% endif %} -->
+                                    {% endcomment %}
+
+                                    </div>
+                                    <h5>Views: {{ post.views }}</h5>
+                                    <p>{{ post.content|safe }}</p>
+                                <div class="commententries">
+                                    <h3>Comments ({{ comments.count }})</h3>
+                                {% if user.is_authenticated %}
+                                <form action="{% url 'submit_comment' pk=post.pk %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" id="commentID">
+                                    <div class="comment">
+                                        <input type="text" name="comment_content" placeholder="Comment" class="comment">
+                                    </div>
+                                    <div class="post">
+                                        <input type="submit" value="Post">
+                                    </div>
+                                </form>
+                                {% else %}
+                                <h5><a href="{% url 'login' %}">Login</a> in order to leave a comment</h5>
+                                {% endif %}
+                                    <ul class="commentlist">
+                                    {% if not comments %} </br>
+                                        <h5>No comments yet...</h5>
+
+                                    {% else %}
+                                    {% for comment in comments %}
+                                        <li>
+                                            <article class="comment">
+                                                <header class="comment-author">
+                                                    <img src="{% static 'img/unknown_user.jpg' %}" alt="">
+                                                </header>
+                                                <section class="comment-details">
+                                                    <div class="author-name">
+                                                        {% if comment.user == null %}
+                                                        <h5><a href="#">[deleted]</a></h5>
+                                                        {% else %}
+                                                        <h5><a href="#">{{ comment.user.username }}</a></h5>
+                                                        {% endif %}
+                                                        <p>{{ comment.created }}</p>
+                                                    </div>
+                                                    <div class="comment-body">
+                                                        <p>{{ comment.comment_text }} </p>
+                                                    </div>
+                                                    <div class="reply">
+                                                        <p><!--<a href="#">-->
+                                                            <span>
+                                                            {% if user.is_authenticated %}
+                                                            <a href="{% url 'like_comment' post.id comment.id %}"><i class="fa fa-thumbs-up" aria-hidden="true"></i></a> <!--</a>-->
+                                                            {% else %}
+                                                            <a href="{% url 'login' %}" class="fa fa-thumbs-up" aria-hidden="true"></a>
+                                                            {% endif %}
+                                                            {% if comment.like_count %}
+                                                            {{ comment.like_count }}
+                                                            {% else %}
+                                                            0
+                                                            {% endif %}
+                                                                </span>
+                                                            <span>
+                                                        <button class="fa fa-reply" aria-hidden="true"></button>{{ comment.replies.count }}
+                                                            {% if comment.replies.all %}
+                                                            <button class="showcoms"> Show replies({{comment.replies.count}})</button></span></p>
+                                                            {% endif %}
+
+                                                        <form action="{% url 'submit_comment' pk=post.pk %}" method="post" style="display:none;">
+                                                            {% csrf_token %}
+                                                            <input type="hidden" name="commentID" value="{{ comment.id }}">
+                                                            <div class="comment">
+                                                                <input type="text" name="comment_content" placeholder="Reply..." class="replyComment">
+                                                            </div>
+                                                            <div class="post">
+                                                                <input type="submit" value="Reply">
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </section>
+
+                                            {% if comment.replies.all %}
+                                            <div class="repliess" style="display:none;">
+                                            {% for reply in comment.replies.all %}
+
+                                                <ul class="children">
+                                                    <li>
+                                                        <article class="comment">
+
+                                                            <header class="comment-author">
+                                                                <img src="{% static 'img/unknown_user.jpg' %}" alt="">
+                                                            </header>
+                                                            <section class="comment-details">
+                                                                <div class="author-name">
+                                                                    {% if reply.user == null %}
+                                                                    <h5><a href="#">[deleted]</a></h5>
+                                                                    {% else %}
+                                                                    <h5><a href="#">{{ reply.user.username }}</a></h5>
+                                                                    {% endif %}
+                                                                    {% if reply.comm_to_repl.user == null %}
+                                                                    <p>Reply to --> [deleted]</p>
+                                                                    {% else %}
+                                                                    <p>Reply to --> {{ reply.comm_to_repl.user}}</p>
+                                                                    {% endif %}
+                                                                    <p>{{ reply.created }}</p>
+                                                                </div>
+                                                                <div class="comment-body">
+                                                                    <p>{{ reply.comment_text}}</p>
+                                                                </div>
+                                                                <div class="reply">
+                                                                    <p><span>
+                                                                        {% if user.is_authenticated %}
+                                                                        <a href="{% url 'like_comment' post.id reply.id %}"><i class="fa fa-thumbs-up" aria-hidden="true"></i></a> <!--</a>-->
+                                                                        {% else %}
+                                                                        <a href="{% url 'login' %}" class="fa fa-thumbs-up" aria-hidden="true"></a>
+                                                                        {% endif %}
+                                                                        {% if reply.like_count %}
+                                                                        {{ reply.like_count }}
+                                                                        {% else %}
+                                                                        0
+                                                                        {% endif %}
+                                                                            </span>
+                                                                        <span>
+                                                                    <button class="fa fa-reply" aria-hidden="true"></button>
+                                                                        </span>
+                                                                        </p>
+                                                                </div>
+                                                            </section>
+                                                        </article>
+                                                    </li>
+                                                </ul>
+                                            {% endfor %}
+                                            </div>
+                                            {% endif %}
+                                                </article>
+                                    {% endfor %}
+                                    {% endif %}
+                                    </ul>
+
+                               </div>
+
+                            </div>
+                                    </div>
+                                </div>
+                            <div class="col-md-4">
+                                <div class="newsletter">
+                                <h2 class="sidebar-title">Search for the news</h2>
+                                <form action="{% url 'search' %}" method="get">
+                                    <input type="text" name="s" placeholder="Search...">
+                                    <input type="submit" value="Search">
+                                </form>
+                                </div>
+                                {% get_popular_posts 5 %}
+                                    <div class="iss">
+                                        <h2 class="sidebar-title">Found some issues? </h2>
+                                        {% if user.is_authenticated %}
+                                        <form action="{% url 'submit_issue' pk=post.pk %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" id="reportID">
+                                            <div class="comment">
+                                                <input type="text" name="issue_description" placeholder="Issue description..." class="issue">
+                                            </div>
+                                            <div class="post">
+                                                <input type="submit" value="Report">
+                                            </div>
+                                        </form>
+                                        {% else %}
+                                        <h5><a href="{% url 'login' %}">Login</a> in order to report an issue</h5>
+                                        {% endif %}
+                                    </div>
+                                {% comment %}
+                                <!--
+                            <div class="tags" style="">
+                                <h2 class="sidebar-title">Tags</h2>
+                                {% for ta in post.tag.all %}
+                                <p><a href="{{ ta.get_absolute_url }}">{{ ta.title }}</a></p>
+                                {% endfor %}
+                            </div>
+                                -->
+                                {% endcomment %}
+                        </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
+    {% block pagination %}
+    {% endblock %}
+        </section>
+{% endblock %}
+
+
+{% block footer %}
+{% include 'inc/_footer.html' %}
+{% endblock %}
+
+

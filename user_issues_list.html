@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+{% include 'inc/_header.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="card-container">
+    {% for issue in user_sent_issues %} 
+    <!-- Example Card 1 -->
+    <div class="card">
+        <h3 class="issue-id">Issue #{{ issue.id }}</h3>
+        <p><strong>Post:</strong> {{ issues.post.title }}</p>
+        <p><strong>User:</strong> {{issue.user.username}}</p>
+        <!--        <p><strong>Admin:</strong> </p> -->
+        {% if issues.status == 0 %} 
+      <p class="status status-open">Status: Open</p>
+      {% elif issues.status == 1 %}
+      <p class="status status-in-progress">Status: In Progress</p>
+      {% elif issue.status == 2 %}
+      <p class="status status-resolved">Status: Resolved</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    <!-- Example Card 2 -->
+    <div class="card">
+      <h3 class="issue-id">Issue #102</h3>
+      <p><strong>Post:</strong> Understanding Django migrations</p>
+      <p><strong>User:</strong> Alice Johnson</p>
+      <p><strong>Admin:</strong> Mike Davis</p>
+      <p class="status status-in-progress">Status: In Progress</p>
+    </div>
+
+    <!-- Example Card 3 -->
+    <div class="card">
+      <h3 class="issue-id">Issue #103</h3>
+      <p><strong>Post:</strong> Deploying Django apps</p>
+      <p><strong>User:</strong> Sarah Lee</p>
+      <p><strong>Admin:</strong> Emily Brown</p>
+      <p class="status status-resolved">Status: Resolved</p>
+    </div>
+  </div>
+
+
+{% endblock %}
+
+
+{% block footer %}
+{% include 'inc/_footer.html' %}
+{% endblock %}
+

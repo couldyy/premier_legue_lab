@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+{% include 'inc/_header.html' %}
+{% endblock %}
+
+{% block content %}
+<div class="card-container">
+    {% for issue in user_sent_issues %} 
+    <!-- Example Card 1 -->
+    <div class="card">
+        <h3 class="issue-id">Issue #{{ issue.id }}</h3>
+        <p><strong>Post:</strong> {{ issue.data_id.title }}</p>
+        <p><strong>User:</strong> {{issue.user.username}}</p>
+        <!--        <p><strong>Admin:</strong> </p> -->
+        {% if issue.status_id == 1 %} 
+      <p class="status status-open">Status: Open</p>
+      {% elif issue.status_id == 2 %}
+      <p class="status status-in-progress">Status: In Progress</p>
+      {% elif issue.status_id == 3 %}
+      <p class="status status-resolved">Status: Resolved</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+  </div>
+
+
+{% endblock %}
+
+
+

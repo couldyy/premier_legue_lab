@@ -1,0 +1,14 @@
+<h2 class="sidebar-title"> Popular </h2>
+<div class="grid" style="position: relative;">
+    {% for post in posts %}
+    <div class="portfolio-item popular"> <!--style="position: absolute; left: 0px; top: 0px;"> --!>
+    {% if post.photo %}
+        <img src="{{ post.photo.url }}" alt="">
+        {% endif %}
+        <div class="portfolio-text">
+            <h5><a href="{{ post.get_absolute_url }}"> {{ post.title }}</a></h5>
+            <p>By {{ post.posted_by }} <span>|</span>{{ post.created_at }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>

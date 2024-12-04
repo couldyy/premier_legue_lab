@@ -1,0 +1,46 @@
+ {# load blog_tags #} 
+        <header class="header">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-2">
+                        <div class="logo">
+                            <h2><a href="{% url 'home' %}">PL news</a></h2>
+                        </div>
+                    </div>
+                    <div class="col-md-10">
+                        <div class="menu">
+                            <ul>
+                                <li class="active"><a href="{% url 'home' %}">Home</a></li>
+                                {% if request.user.is_authenticated and request.user.is_admin or request.user.is_analyst %}
+                                <li><a href="{% url 'admin:blog_data_add' %}">Add new post</a></li>
+                                {% endif %}
+                                {% if request.user.is_authenticated and request.user.is_admin %}
+                                <li><a href="{% url 'admin:blog_issueticket_changelist' %}">Show issue tickets ({{all_issues_count}})</a></li>
+                                {% endif %}
+
+                                {% if request.user.is_authenticated and user_issues_count > 0 %}
+                                <li><a href="{% url 'issues_list' %}">Show reported issue ({{user_issues_count}})</a></li>
+                                {% endif %}
+
+                                <!--
+                                    {% comment %}
+                                {% get_categories as categories %}
+                                {% for item in categories %}
+                                <li><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></li>
+                                {% endfor %}
+                                {% endcomment %}
+                                -->
+                                {% if request.user.is_authenticated %}
+                                Welcome, {{ user.username }}! | <a href="{% url 'logout' %}"> Logout </a>
+                                {% else %}
+                                <a href="{% url 'registration' %}">Sign up</a> | <a href="{% url 'login' %}">Login</a>
+                                {% endif %}
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </header>

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{{ title }}
+{% endblock %}
+
+{% block header %}
+{% include 'inc/_header.html' %}
+{% endblock %}
+
+{% block content %}
+
+<section class="bg-text-area">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="bg-text">
+                            <h3>Classic BLOG Design</h3>
+                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+<section class="blog-post-area">
+            <div class="container">
+                <div class="row">
+                            {% for item in post %}
+                            <div class="col-md-3">
+                                <div class="single-post">
+                                    <img src="{{ item.photo.url }}" class="card-img" alt="">
+                                    <h3><a href="{{ item.get_absolute_url }}">{{ item.title }}</a></h3>
+                                    <h4><span>Posted By: <span class="author-name"> {{ item.posted_by }}</span></span>
+                                    </h4>
+                                    <p>{{ item.content|safe|truncatewords:50 }}</p>
+                                    <h4><span>{{ item.created_at }}</span></h4>
+                                </div>
+                            </div>
+                            {% endfor %}
+                    </div>
+            </div>
+{% block pagination %}
+{% include 'inc/_pagination.html' %}
+{% endblock %}
+</section>
+{% endblock %}
+
+
+
+
+{% block footer %}
+{% include 'inc/_footer.html' %}
+{% endblock %}
