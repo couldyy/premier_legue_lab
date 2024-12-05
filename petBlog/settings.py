@@ -23,7 +23,9 @@ SECRET_KEY = 'django-insecure-1p2bl8ta_whh$1nt4)7cn$i$pu6f-0mvcaddg%o1h^_ho2%rsc
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+#DEBUG = False
 
+#ALLOWED_HOSTS = ['127.0.0.1']
 ALLOWED_HOSTS = []
 
 
@@ -158,7 +160,7 @@ CKEDITOR_UPLOAD_PATH = "uploads/"
 
 CKEDITOR_CONFIGS = {
     'default': {
-        'skin': 'moono-lisa',
+        'skin': 'moono',
         # 'skin': 'office2013',
         'toolbar_Basic': [
             ['Source', '-', 'Bold', 'Italic']

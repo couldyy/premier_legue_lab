@@ -29,21 +29,18 @@ class HomePage(ListView):
             if request.user.is_admin:
 #            context['issues_count'] = IssueTicket.objects.filter(status=0).count
                 with connection.cursor() as cursor:
-                    cursor.execute("SELECT COUNT(*) FROM `issue_ticket` WHERE (status_id=1 OR status_id=2)")
+                    cursor.execute("SELECT COUNT(*) FROM `issue_ticket`")
                     # get a single line from the result
                     row = cursor.fetchone()
                     # get the value in the first column of the result (the only column)
                     all_issues_count = row[0]
-                print(f"count {all_issues_count}")
                 context['all_issues_count'] = all_issues_count
 
-            context['user_sent_issues'] = IssueTicket.objects.raw("SELECT * FROM `issue_ticket` WHERE (status_id=1 OR status_id=2) AND user_id=%s", [request.user.id])
+            context['user_sent_issues'] = IssueTicket.objects.raw("SELECT * FROM `issue_ticket` WHERE  user_id=%s", [request.user.id])
             with connection.cursor() as cursor:
-                cursor.execute("SELECT COUNT(*) FROM `issue_ticket` WHERE  (status_id=1 OR status_id=2) AND user_id=%s", [request.user.id])
+                cursor.execute("SELECT COUNT(*) FROM `issue_ticket` WHERE   user_id=%s", [request.user.id])
                 row = cursor.fetchone()
                 user_issues_count = row[0]
-            print(f"user issues {user_issues_count}")
-            print("aaaaaaa")
             context['user_issues_count'] = user_issues_count
         return context
 
@@ -62,6 +59,8 @@ class HomePage(ListView):
 #    def get_queryset(self):
 #        return Data.objects.filter(category__slug=self.kwargs['slug'])
 
+#(status_id=1 OR status_id=2)
+
 class ShowUserIssuesList(ListView):
     model = IssueTicket
     template_name = 'blog/issues_list.html'
@@ -75,17 +74,16 @@ class ShowUserIssuesList(ListView):
             if request.user.is_admin:
 #            context['issues_count'] = IssueTicket.objects.filter(status=0).count
                 with connection.cursor() as cursor:
-                    cursor.execute("SELECT COUNT(*) FROM `issue_ticket` WHERE (status_id=1 OR status_id=2)")
+                    cursor.execute("SELECT COUNT(*) FROM `issue_ticket`")
                     # get a single line from the result
                     row = cursor.fetchone()
                     # get the value in the first column of the result (the only column)
                     all_issues_count = row[0]
-                print(f"count {all_issues_count}")
                 context['all_issues_count'] = all_issues_count
 
-            context['user_sent_issues'] = IssueTicket.objects.raw("SELECT * FROM `issue_ticket` WHERE  (status_id=1 OR status_id=2) AND user_id=%s", [request.user.id])
+            context['user_sent_issues'] = IssueTicket.objects.raw("SELECT * FROM `issue_ticket` WHERE   user_id=%s", [request.user.id])
             with connection.cursor() as cursor:
-                cursor.execute("SELECT COUNT(*) FROM `issue_ticket` WHERE  (status_id=1 OR status_id=2) AND user_id=%s", [request.user.id])
+                cursor.execute("SELECT COUNT(*) FROM `issue_ticket` WHERE   user_id=%s", [request.user.id])
                 row = cursor.fetchone()
                 user_issues_count = row[0]
             context['user_issues_count'] = user_issues_count
@@ -135,17 +133,16 @@ class ShowSingleNews(DetailView):
             if request.user.is_admin:
 #            context['issues_count'] = IssueTicket.objects.filter(status=0).count
                 with connection.cursor() as cursor:
-                    cursor.execute("SELECT COUNT(*) FROM `issue_ticket` WHERE (status_id=1 OR status_id=2)")
+                    cursor.execute("SELECT COUNT(*) FROM `issue_ticket`")
                     # get a single line from the result
                     row = cursor.fetchone()
                     # get the value in the first column of the result (the only column)
                     all_issues_count = row[0]
-                print(f"count {all_issues_count}")
                 context['all_issues_count'] = all_issues_count
 
-            context['user_sent_issues'] = IssueTicket.objects.raw("SELECT * FROM `issue_ticket` WHERE  (status_id=1 OR status_id=2) AND user_id=%s", [request.user.id])
+            context['user_sent_issues'] = IssueTicket.objects.raw("SELECT * FROM `issue_ticket` WHERE   user_id=%s", [request.user.id])
             with connection.cursor() as cursor:
-                cursor.execute("SELECT COUNT(*) FROM `issue_ticket` WHERE  (status_id=1 OR status_id=2) AND user_id=%s", [request.user.id])
+                cursor.execute("SELECT COUNT(*) FROM `issue_ticket` WHERE   user_id=%s", [request.user.id])
                 row = cursor.fetchone()
                 user_issues_count = row[0]
             context['user_issues_count'] = user_issues_count
@@ -186,17 +183,16 @@ class Search(ListView):
             if request.user.is_admin:
 #            context['issues_count'] = IssueTicket.objects.filter(status=0).count
                 with connection.cursor() as cursor:
-                    cursor.execute("SELECT COUNT(*) FROM `issue_ticket` WHERE (status_id=1 OR status_id=2)")
+                    cursor.execute("SELECT COUNT(*) FROM `issue_ticket`")
                     # get a single line from the result
                     row = cursor.fetchone()
                     # get the value in the first column of the result (the only column)
                     all_issues_count = row[0]
-                print(f"count {all_issues_count}")
                 context['all_issues_count'] = all_issues_count
 
-            context['user_sent_issues'] = IssueTicket.objects.raw("SELECT * FROM `issue_ticket` WHERE  (status_id=1 OR status_id=2) AND user_id=%s", [request.user.id])
+            context['user_sent_issues'] = IssueTicket.objects.raw("SELECT * FROM `issue_ticket` WHERE user_id=%s", [request.user.id])
             with connection.cursor() as cursor:
-                cursor.execute("SELECT COUNT(*) FROM `issue_ticket` WHERE  (status_id=1 OR status_id=2) AND user_id=%s", [request.user.id])
+                cursor.execute("SELECT COUNT(*) FROM `issue_ticket` WHERE user_id=%s", [request.user.id])
                 row = cursor.fetchone()
                 user_issues_count = row[0]
             context['user_issues_count'] = user_issues_count
@@ -245,11 +241,10 @@ def like(request, post_id, comment_id):
     post = Data.objects.get(id=post_id)
     comment = Comments.objects.get(id=comment_id)
     user = request.user
-    print(comment)
     if user in comment.likes.all():
         comment.likes.remove(user)
         comment.like_count -= 1
-        result = Comment.like_count
+        result = Comments.like_count
         comment.save()
         comment.refresh_from_db()
     else:
@@ -266,7 +261,6 @@ def submit_comment(request, pk):
     user = request.user
     content = request.POST.get('comment_content')
     commrepl_id = request.POST.get("commentID")
-    print(commrepl_id)
     if commrepl_id == None:
         commrepl = None
     else :

@@ -17,6 +17,7 @@
         <h3 class="issue-id">Issue #{{ issue.id }}</h3>
         <p><strong>Post:</strong> {{ issue.data_id.title }}</p>
         <p><strong>User:</strong> {{issue.user.username}}</p>
+        <p><strong>Description:</strong> {{issue.issue_description}}</p>
         <!--        <p><strong>Admin:</strong> </p> -->
         {% if issue.status_id == 1 %} 
       <p class="status status-open">Status: Open</p>
